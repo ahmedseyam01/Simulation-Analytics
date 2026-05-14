@@ -96,8 +96,8 @@ body {
 .stat-card {
     border: none;
     border-radius: 20px;
-    padding: 1.25rem;
-    min-height: 140px;
+    padding: 0.75rem 1rem;
+    min-height: 110px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -105,16 +105,20 @@ body {
 
 .stat-card h3 {
     font-weight: 800;
-    font-size: 1.85rem;
+    font-size: 1.5rem;
     margin-bottom: 0;
 }
 
 .stat-card h6 {
     font-weight: 600;
     letter-spacing: 0.05em;
-    min-height: 2.5rem; /* Forces consistent height for titles (1 or 2 lines) */
+    min-height: 2rem; /* Forces consistent height for titles (1 or 2 lines) */
     display: flex;
     align-items: center;
+}
+
+.stat-card p {
+    font-size: 0.8rem;
 }
 
 /* Tabs */
