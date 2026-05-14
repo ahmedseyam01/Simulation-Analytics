@@ -22,72 +22,72 @@ const LCG_MODULUS = 4294967296; // 2^32
 // =============================================================
 
 // Form Inputs
-const domCustomerCount = document.getElementById('customerCount');
-const domSeed = document.getElementById('seed');
-const domServerCount = document.getElementById('serverCount');
-const domDiscipline = document.getElementById('discipline');
-const domMaxQueue = document.getElementById('maxQueue');
-const domWarmup = document.getElementById('warmup');
+const inputCustomerCount = document.getElementById('customerCount');
+const inputSeed = document.getElementById('seed');
+const inputServerCount = document.getElementById('serverCount');
+const inputDiscipline = document.getElementById('discipline');
+const inputMaxQueue = document.getElementById('maxQueue');
+const inputWarmup = document.getElementById('warmup');
 
 // Action Buttons / Form
-const domSimForm = document.getElementById('simForm');
-const domResetBtn = document.getElementById('resetBtn');
+const simulationForm = document.getElementById('simForm');
+const resetButton = document.getElementById('resetBtn');
 
 // KPI Cards
-const domStatW = document.getElementById('statW');
-const domStatQ = document.getElementById('statQ');
-const domStatU = document.getElementById('statU');
-const domStatTotalTime = document.getElementById('statTotalTime');
-const domStatRejected = document.getElementById('statRejected');
+const kpiAvgWait = document.getElementById('statW');
+const kpiAvgQueue = document.getElementById('statQ');
+const kpiUtilization = document.getElementById('statU');
+const kpiTotalTime = document.getElementById('statTotalTime');
+const kpiRejected = document.getElementById('statRejected');
 
 // Event Log & Sequences
-const domInterArrivalSeq = document.getElementById('interArrivalSeq');
-const domServiceSeq = document.getElementById('serviceSeq');
-const domPerServerUtil = document.getElementById('perServerUtil');
-const domTableBody = document.querySelector('#simTable tbody');
-const domPriorityTh = document.getElementById('priorityTh');
+const textInterArrivalSequence = document.getElementById('interArrivalSeq');
+const textServiceSequence = document.getElementById('serviceSeq');
+const containerPerServerUtil = document.getElementById('perServerUtil');
+const eventLogTableBody = document.querySelector('#simTable tbody');
+const tableHeaderPriority = document.getElementById('priorityTh');
 
 // Chart Canvases
-const domGanttChart = document.getElementById('ganttChart');
-const domWaitingChart = document.getElementById('waitingChart');
+const canvasGanttChart = document.getElementById('ganttChart');
+const canvasWaitChart = document.getElementById('waitingChart');
 
 // Comparison Tables (Part 3: Multi-Server)
-const domMscW1 = document.getElementById('msc-w1');
-const domMscW2 = document.getElementById('msc-w2');
-const domMscW3 = document.getElementById('msc-w3');
+const tableMscWait1 = document.getElementById('msc-w1');
+const tableMscWait2 = document.getElementById('msc-w2');
+const tableMscWait3 = document.getElementById('msc-w3');
 
-const domMscQ1 = document.getElementById('msc-q1');
-const domMscQ2 = document.getElementById('msc-q2');
-const domMscQ3 = document.getElementById('msc-q3');
+const tableMscQueue1 = document.getElementById('msc-q1');
+const tableMscQueue2 = document.getElementById('msc-q2');
+const tableMscQueue3 = document.getElementById('msc-q3');
 
-const domMscU1 = document.getElementById('msc-u1');
-const domMscU2 = document.getElementById('msc-u2');
-const domMscU3 = document.getElementById('msc-u3');
+const tableMscUtil1 = document.getElementById('msc-u1');
+const tableMscUtil2 = document.getElementById('msc-u2');
+const tableMscUtil3 = document.getElementById('msc-u3');
 
 // Comparison Tables (Part 4: Discipline)
-const domDcFcfsW = document.getElementById('dc-fcfs-w');
-const domDcFcfsQ = document.getElementById('dc-fcfs-q');
-const domDcLcfsW = document.getElementById('dc-lcfs-w');
-const domDcLcfsQ = document.getElementById('dc-lcfs-q');
-const domDcDiffW = document.getElementById('dc-diff-w');
-const domDcDiffQ = document.getElementById('dc-diff-q');
+const tableDisciplineFcfsWait = document.getElementById('dc-fcfs-w');
+const tableDisciplineFcfsQueue = document.getElementById('dc-fcfs-q');
+const tableDisciplineLcfsWait = document.getElementById('dc-lcfs-w');
+const tableDisciplineLcfsQueue = document.getElementById('dc-lcfs-q');
+const tableDisciplineDiffWait = document.getElementById('dc-diff-w');
+const tableDisciplineDiffQueue = document.getElementById('dc-diff-q');
 
 // Comparison Tables (Part 5: Warm-up)
-const domWucW0 = document.getElementById('wuc-w0');
-const domWucW3 = document.getElementById('wuc-w3');
-const domWucWd = document.getElementById('wuc-wd');
+const tableWarmupWait0 = document.getElementById('wuc-w0');
+const tableWarmupWait3 = document.getElementById('wuc-w3');
+const tableWarmupWaitDiff = document.getElementById('wuc-wd');
 
-const domWucQ0 = document.getElementById('wuc-q0');
-const domWucQ3 = document.getElementById('wuc-q3');
-const domWucQd = document.getElementById('wuc-qd');
+const tableWarmupQueue0 = document.getElementById('wuc-q0');
+const tableWarmupQueue3 = document.getElementById('wuc-q3');
+const tableWarmupQueueDiff = document.getElementById('wuc-qd');
 
-const domWucU0 = document.getElementById('wuc-u0');
-const domWucU3 = document.getElementById('wuc-u3');
-const domWucUd = document.getElementById('wuc-ud');
+const tableWarmupUtil0 = document.getElementById('wuc-u0');
+const tableWarmupUtil3 = document.getElementById('wuc-u3');
+const tableWarmupUtilDiff = document.getElementById('wuc-ud');
 
 // Wire up events
-domSimForm.addEventListener('submit', onFormSubmit);
-domResetBtn.addEventListener('click', () => location.reload());
+simulationForm.addEventListener('submit', onFormSubmit);
+resetButton.addEventListener('click', () => location.reload());
 document.addEventListener('DOMContentLoaded', () => onFormSubmit());
 
 
@@ -290,12 +290,12 @@ function runSimulation(config) {
  */
 function readFormConfig() {
     return {
-        numCustomers: parseInt(domCustomerCount.value) || 15,
-        seed: parseInt(domSeed.value) || 42,
-        numServers: parseInt(domServerCount.value) || 1,
-        discipline: domDiscipline.value,
-        maxQueueSize: parseInt(domMaxQueue.value) || 0,
-        warmupCount: parseInt(domWarmup.value) || 0
+        numCustomers: parseInt(inputCustomerCount.value) || 15,
+        seed: parseInt(inputSeed.value) || 42,
+        numServers: parseInt(inputServerCount.value) || 1,
+        discipline: inputDiscipline.value,
+        maxQueueSize: parseInt(inputMaxQueue.value) || 0,
+        warmupCount: parseInt(inputWarmup.value) || 0
     };
 }
 
@@ -307,25 +307,25 @@ function updateDashboard(result) {
     const stats = result.stats;
 
     // Update statistics cards
-    domStatW.innerText = stats.avgSystemWait;
-    domStatQ.innerText = stats.avgQueueLength;
-    domStatU.innerText = stats.utilization + '%';
-    domStatTotalTime.innerText = stats.totalTime;
-    domStatRejected.innerText = result.numRejected;
+    kpiAvgWait.innerText = stats.avgSystemWait;
+    kpiAvgQueue.innerText = stats.avgQueueLength;
+    kpiUtilization.innerText = stats.utilization + '%';
+    kpiTotalTime.innerText = stats.totalTime;
+    kpiRejected.innerText = result.numRejected;
 
     // Update randomly generated sequences text
-    domInterArrivalSeq.innerText = result.interArrivalTimes.join(', ');
-    domServiceSeq.innerText = result.serviceDurations.join(', ');
+    textInterArrivalSequence.innerText = result.interArrivalTimes.join(', ');
+    textServiceSequence.innerText = result.serviceDurations.join(', ');
 
     // Update utilization percentage for each server
-    domPerServerUtil.innerHTML = stats.perServerUtil
+    containerPerServerUtil.innerHTML = stats.perServerUtil
         .map((util, i) => `<span class="badge bg-secondary me-1">S${i + 1}: ${util}%</span>`)
         .join('');
 
     // Update event log table (clear then refill)
-    domTableBody.innerHTML = '';
-    const showPriorityColumn = domDiscipline.value === 'Priority';
-    domPriorityTh.style.display = showPriorityColumn ? '' : 'none';
+    eventLogTableBody.innerHTML = '';
+    const showPriorityColumn = inputDiscipline.value === 'Priority';
+    tableHeaderPriority.style.display = showPriorityColumn ? '' : 'none';
 
     result.allCustomers.forEach(customer => {
         const row = document.createElement('tr');
@@ -362,7 +362,7 @@ function updateDashboard(result) {
             <td>${serverBadge}</td>
             ${priorityBadge}
         `;
-        domTableBody.appendChild(row);
+        eventLogTableBody.appendChild(row);
     });
 }
 
@@ -380,7 +380,7 @@ function drawCharts(result) {
  * Draws a Gantt chart illustrating the active and idle periods for each server over time.
  */
 function drawGanttChart(result, servedCustomers) {
-    const ctx = domGanttChart.getContext('2d');
+    const ctx = canvasGanttChart.getContext('2d');
     if (ganttChart) ganttChart.destroy();
 
     const serverLabels = Array.from({ length: result.numServers }, (_, i) => `Server ${i + 1}`);
@@ -442,7 +442,7 @@ function drawGanttChart(result, servedCustomers) {
  * Draws stacked bar charts showing wait time plus service time for each customer.
  */
 function drawWaitBarChart(servedCustomers) {
-    const ctx = domWaitingChart.getContext('2d');
+    const ctx = canvasWaitChart.getContext('2d');
     if (waitBarChart) waitBarChart.destroy();
 
     const customerLabels = servedCustomers.map(c => `C${c.id}`);
@@ -485,9 +485,9 @@ function drawWaitBarChart(servedCustomers) {
  */
 function fillComparisonTables(baseConfig) {
     // ---- Part 3: Multi-server comparison ----
-    const mscW = [null, domMscW1, domMscW2, domMscW3];
-    const mscQ = [null, domMscQ1, domMscQ2, domMscQ3];
-    const mscU = [null, domMscU1, domMscU2, domMscU3];
+    const mscW = [null, tableMscWait1, tableMscWait2, tableMscWait3];
+    const mscQ = [null, tableMscQueue1, tableMscQueue2, tableMscQueue3];
+    const mscU = [null, tableMscUtil1, tableMscUtil2, tableMscUtil3];
     
     [1, 2, 3].forEach(numServers => {
         const result = runSimulation({ ...baseConfig, numServers, warmupCount: 0, discipline: 'FCFS' });
@@ -500,31 +500,31 @@ function fillComparisonTables(baseConfig) {
     const fcfsResult = runSimulation({ ...baseConfig, discipline: 'FCFS' });
     const lcfsResult = runSimulation({ ...baseConfig, discipline: 'LCFS' });
 
-    domDcFcfsW.innerText = fcfsResult.stats.avgSystemWait;
-    domDcFcfsQ.innerText = fcfsResult.stats.avgQueueLength;
-    domDcLcfsW.innerText = lcfsResult.stats.avgSystemWait;
-    domDcLcfsQ.innerText = lcfsResult.stats.avgQueueLength;
+    tableDisciplineFcfsWait.innerText = fcfsResult.stats.avgSystemWait;
+    tableDisciplineFcfsQueue.innerText = fcfsResult.stats.avgQueueLength;
+    tableDisciplineLcfsWait.innerText = lcfsResult.stats.avgSystemWait;
+    tableDisciplineLcfsQueue.innerText = lcfsResult.stats.avgQueueLength;
 
     const wDifference = (parseFloat(lcfsResult.stats.avgSystemWait) - parseFloat(fcfsResult.stats.avgSystemWait)).toFixed(3);
     const qDifference = (parseFloat(lcfsResult.stats.avgQueueLength) - parseFloat(fcfsResult.stats.avgQueueLength)).toFixed(3);
-    domDcDiffW.innerText = (wDifference >= 0 ? '+' : '') + wDifference;
-    domDcDiffQ.innerText = (qDifference >= 0 ? '+' : '') + qDifference;
+    tableDisciplineDiffWait.innerText = (wDifference >= 0 ? '+' : '') + wDifference;
+    tableDisciplineDiffQueue.innerText = (qDifference >= 0 ? '+' : '') + qDifference;
 
     // ---- Part 5: Warm-up comparison ----
     const noWarmup = runSimulation({ ...baseConfig, warmupCount: 0 });
     const withWarmup = runSimulation({ ...baseConfig, warmupCount: 3 });
 
-    domWucW0.innerText = noWarmup.stats.avgSystemWait;
-    domWucW3.innerText = withWarmup.stats.avgSystemWait;
-    domWucWd.innerText = (withWarmup.stats.avgSystemWait - noWarmup.stats.avgSystemWait).toFixed(3);
+    tableWarmupWait0.innerText = noWarmup.stats.avgSystemWait;
+    tableWarmupWait3.innerText = withWarmup.stats.avgSystemWait;
+    tableWarmupWaitDiff.innerText = (withWarmup.stats.avgSystemWait - noWarmup.stats.avgSystemWait).toFixed(3);
 
-    domWucQ0.innerText = noWarmup.stats.avgQueueLength;
-    domWucQ3.innerText = withWarmup.stats.avgQueueLength;
-    domWucQd.innerText = (withWarmup.stats.avgQueueLength - noWarmup.stats.avgQueueLength).toFixed(3);
+    tableWarmupQueue0.innerText = noWarmup.stats.avgQueueLength;
+    tableWarmupQueue3.innerText = withWarmup.stats.avgQueueLength;
+    tableWarmupQueueDiff.innerText = (withWarmup.stats.avgQueueLength - noWarmup.stats.avgQueueLength).toFixed(3);
 
-    domWucU0.innerText = noWarmup.stats.utilization + '%';
-    domWucU3.innerText = withWarmup.stats.utilization + '%';
-    domWucUd.innerText = (withWarmup.stats.utilization - noWarmup.stats.utilization).toFixed(1) + '%';
+    tableWarmupUtil0.innerText = noWarmup.stats.utilization + '%';
+    tableWarmupUtil3.innerText = withWarmup.stats.utilization + '%';
+    tableWarmupUtilDiff.innerText = (withWarmup.stats.utilization - noWarmup.stats.utilization).toFixed(1) + '%';
 }
 
 /**
