@@ -79,8 +79,8 @@ const LCG_INCREMENT  = 1013904223;
 const LCG_MODULUS    = 4294967296; // 2^32
 
 /**
- * دالة لحساب الحالة التالية للرقم العشوائي (LCG)
- * تأخذ البذرة أو الحالة الحالية وتطبق عليها المعادلة الرياضية لإنتاج الحالة الجديدة
+ * Calculates the next state for the Linear Congruential Generator (LCG).
+ * Takes the current state (seed) and applies the mathematical formula to produce the new state.
  */
 function lcgNextState(currentState) {
     const nextState = Number(
@@ -91,17 +91,17 @@ function lcgNextState(currentState) {
 }
 
 /**
- * دالة لتحويل الحالة العشوائية الكبيرة إلى رقم صغير
- * تأخذ الحالة وتخرج رقماً صحيحاً بين 1 و 10
+ * Converts a large random state into a smaller integer.
+ * Takes the state and outputs an integer between 1 and 10.
  */
 function lcgToValue(state) {
     return (state % 10) + 1;
 }
 
 /**
- * دالة محرك المحاكاة الرئيسية
- * تقوم بتوليد البيانات العشوائية، بناء طابور الزبائن، ومحاكاة دخولهم وخروجهم من السيرفرات
- * وترجع في النهاية كل الإحصائيات (وقت الانتظار، الانشغال، أوقات الوصول)
+ * Main simulation engine function.
+ * Generates random data, builds the customer queue, and simulates their arrival and departure from servers.
+ * Returns all final statistics (wait times, utilization, arrival times).
  */
 function runSimulation(config) {
     let lcgState = config.seed;           
@@ -110,7 +110,7 @@ function runSimulation(config) {
     const serviceDurations  = [];   
     const customerPriorities = [];  
 
-    // توليد الأرقام العشوائية للزبائن
+    // Generate random numbers for customers
     for (let i = 0; i < config.numCustomers; i++) {
         lcgState = lcgNextState(lcgState);
         interArrivalTimes.push(lcgToValue(lcgState));
@@ -268,8 +268,8 @@ function runSimulation(config) {
 }
 
 /**
- * دالة لقراءة مدخلات المستخدم من عناصر الـ HTML (الفورم)
- * ترجع كائن Object يحتوي على الأرقام والخيارات المحددة
+ * Reads user inputs from HTML form elements.
+ * Returns an object containing the selected numbers and options.
  */
 function readFormConfig() {
     return {
@@ -283,29 +283,29 @@ function readFormConfig() {
 }
 
 /**
- * دالة لتحديث واجهة المستخدم (البطاقات، الجداول، السلاسل النصية)
- * تأخذ مخرجات المحاكاة وتطبعها في الـ DOM
+ * Updates the user interface (cards, tables, text sequences).
+ * Takes the simulation output and prints it to the DOM.
  */
 function updateDashboard(result) {
     const stats = result.stats;
 
-    // تحديث كروت الإحصائيات
+    // Update statistics cards
     domStatW.innerText         = stats.avgSystemWait;
     domStatQ.innerText         = stats.avgQueueLength;
     domStatU.innerText         = stats.utilization + '%';
     domStatTotalTime.innerText = stats.totalTime;
     domStatRejected.innerText  = result.numRejected;
 
-    // تحديث السلاسل العشوائية المكتوبة
+    // Update randomly generated sequences text
     domInterArrivalSeq.innerText = result.interArrivalTimes.join(', ');
     domServiceSeq.innerText      = result.serviceDurations.join(', ');
 
-    // تحديث نسب إشغال كل سيرفر
+    // Update utilization percentage for each server
     domPerServerUtil.innerHTML = stats.perServerUtil
         .map((util, i) => `<span class="badge bg-secondary me-1">S${i + 1}: ${util}%</span>`)
         .join('');
 
-    // تحديث جدول الأحداث (مسح ثم ملء من جديد)
+    // Update event log table (clear then refill)
     domTableBody.innerHTML = '';
     const showPriorityColumn = domDiscipline.value === 'Priority';
     domPriorityTh.style.display = showPriorityColumn ? '' : 'none';
@@ -354,7 +354,7 @@ function updateDashboard(result) {
 const SERVER_COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
 
 /**
- * دالة لتوجيه نداءات رسم المخططات البيانية (Gantt و Wait Chart)
+ * Directs calls to draw the graphical charts (Gantt and Wait Chart).
  */
 function drawCharts(result) {
     const servedOnly = result.allCustomers.filter(c => !c.wasRejected);
@@ -363,7 +363,7 @@ function drawCharts(result) {
 }
 
 /**
- * دالة لرسم مخطط جانت الذي يوضح فترات عمل وتوقف كل سيرفر زمنيًا
+ * Draws a Gantt chart illustrating the active and idle periods for each server over time.
  */
 function drawGanttChart(result, servedCustomers) {
     const ctx = domGanttChart.getContext('2d');
@@ -424,7 +424,7 @@ function drawGanttChart(result, servedCustomers) {
 }
 
 /**
- * دالة لرسم الأعمدة المكدسة التي تعرض وقت الانتظار بالإضافة لوقت الخدمة لكل زبون
+ * Draws stacked bar charts showing wait time plus service time for each customer.
  */
 function drawWaitBarChart(servedCustomers) {
     const ctx = domWaitingChart.getContext('2d');
@@ -465,8 +465,8 @@ function drawWaitBarChart(servedCustomers) {
 }
 
 /**
- * دالة لمقارنة السيناريوهات المختلفة تلقائياً (تعدد السيرفرات، نوع الطابور، فترات الإحماء)
- * وتقوم بملء الجداول السفلية بنتائج المقارنات
+ * Automatically compares different scenarios (multi-server, queue discipline, warm-up periods)
+ * and populates the bottom tables with the comparison results.
  */
 function fillComparisonTables(baseConfig) {
     // ---- Part 3: Multi-server comparison ----
@@ -509,8 +509,8 @@ function fillComparisonTables(baseConfig) {
 }
 
 /**
- * دالة نقطة البداية الأساسية، يتم استدعاؤها عند الضغط على زر التشغيل
- * تستدعي باقي الدوال بالترتيب وتقوم بتحديث الشاشة
+ * Main entry point, called when the run button is clicked.
+ * Invokes the rest of the functions in order and updates the screen.
  */
 function onFormSubmit(event) {
     if (event) event.preventDefault();
