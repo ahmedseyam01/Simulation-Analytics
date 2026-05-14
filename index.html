@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DES Simulation Dashboard — Discrete Event Simulation</title>
+    <meta name="description"
+        content="Professional Discrete Event Simulation platform implementing LCG random generation, FCFS/LCFS/Priority queuing, multi-server support, and warm-up period analysis.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="container-fluid py-5">
+        <header class="mb-5 text-center">
+            <h1 class="fw-800 text-dark mb-2">Simulation <span style="color: var(--primary-color)">Analytics</span></h1>
+            <p class="text-muted">Professional Discrete Event Simulation — Single &amp; Multi-Server Queuing System</p>
+        </header>
+
+        <div class="row g-4">
+            <!-- Sidebar: Parameters -->
+            <div class="col-lg-4 col-xl-3">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="fas fa-cog text-primary me-2"></i>
+                            <h5 class="card-title mb-0">Parameters</h5>
+                        </div>
+
+                        <form id="simForm">
+                            <div class="mb-3">
+                                <label for="customerCount" class="form-label">Number of Customers (n)</label>
+                                <input type="number" class="form-control" id="customerCount" value="15" min="1"
+                                    max="1000">
+                            </div>
+                            <div class="mb-3">
+                                <label for="seed" class="form-label">Random Seed</label>
+                                <input type="number" class="form-control" id="seed" value="42">
+                            </div>
+                            <div class="mb-3">
+                                <label for="serverCount" class="form-label">Servers</label>
+                                <select class="form-select" id="serverCount">
+                                    <option value="1" selected>1 Server</option>
+                                    <option value="2">2 Servers</option>
+                                    <option value="3">3 Servers</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="discipline" class="form-label">Queue Discipline</label>
+                                <select class="form-select" id="discipline">
+                                    <option value="FCFS" selected>FCFS (First-Come-First-Served)</option>
+                                    <option value="LCFS">LCFS (Last-Come-First-Served)</option>
+                                    <option value="Priority">Priority Queue</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="maxQueue" class="form-label">Max Queue Length (0 = ∞)</label>
+                                <input type="number" class="form-control" id="maxQueue" value="0" min="0">
+                            </div>
+                            <div class="mb-4">
+                                <label for="warmup" class="form-label">Warm-up Count (k)</label>
+                                <input type="number" class="form-control" id="warmup" value="0" min="0">
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary" id="runBtn">
+                                    <i class="fas fa-play me-2"></i>Run Simulation
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="resetBtn">
+                                    <i class="fas fa-undo me-2"></i>Reset
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- LCG Info Box -->
+                        <div class="mt-4 p-3 bg-light rounded-3">
+                            <p class="small text-muted mb-1 fw-bold"><i class="fas fa-microchip me-1"></i> LCG
+                                Parameters</p>
+                            <p class="font-monospace small mb-0">a = 1,664,525</p>
+                            <p class="font-monospace small mb-0">c = 1,013,904,223</p>
+                            <p class="font-monospace small mb-0">m = 2³² = 4,294,967,296</p>
+                            <p class="font-monospace small mb-0">scale: (X mod 10) + 1</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Display -->
+            <div class="col-lg-8 col-xl-9">
+                <!-- KPI Row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-4 col-lg">
+                        <div class="card stat-card bg-primary text-white shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="text-uppercase opacity-75 small mb-2">Avg System Wait (W)</h6>
+                                <h3 id="statW">—</h3>
+                                <p class="small opacity-75 mb-0">minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg">
+                        <div class="card stat-card bg-success text-white shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="text-uppercase opacity-75 small mb-2">Avg Queue (Q)</h6>
+                                <h3 id="statQ">—</h3>
+                                <p class="small opacity-75 mb-0">customers</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg">
+                        <div class="card stat-card bg-warning text-dark shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="text-uppercase opacity-75 small mb-2">Utilization (U)</h6>
+                                <h3 id="statU">—</h3>
+                                <p class="small opacity-75 mb-0">busy time</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg">
+                        <div class="card stat-card bg-danger text-white shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="text-uppercase opacity-75 small mb-2">Rejected</h6>
+                                <h3 id="statRejected">—</h3>
+                                <p class="small opacity-75 mb-0">customers</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg">
+                        <div class="card stat-card bg-dark text-white shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="text-uppercase opacity-75 small mb-2">Total Sim Time</h6>
+                                <h3 id="statTotalTime">—</h3>
+                                <p class="small opacity-75 mb-0">time units</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Per-server utilization -->
+                <div class="mb-3">
+                    <span class="small text-muted fw-bold me-2"><i class="fas fa-server me-1"></i>Per-Server
+                        Utilization:</span>
+                    <span id="perServerUtil"></span>
+                </div>
+
+                <!-- Main Analysis Area -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white border-0 p-0">
+                        <ul class="nav nav-tabs border-0" id="resultTabs" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active" id="table-tab" data-bs-toggle="tab"
+                                    data-bs-target="#table-pane" type="button">
+                                    <i class="fas fa-list-ul me-2"></i>Event Log
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="gantt-tab" data-bs-toggle="tab"
+                                    data-bs-target="#gantt-pane" type="button">
+                                    <i class="fas fa-chart-bar me-2"></i>Gantt Timeline
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="waiting-tab" data-bs-toggle="tab"
+                                    data-bs-target="#waiting-pane" type="button">
+                                    <i class="fas fa-chart-line me-2"></i>System Wait Chart
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="tab-content" id="myTabContent">
+                            <!-- Event Log Tab -->
+                            <div class="tab-pane fade show active p-4" id="table-pane">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle" id="simTable">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Inter-Arr</th>
+                                                <th>Arrival</th>
+                                                <th>Service</th>
+                                                <th>Begin</th>
+                                                <th>End</th>
+                                                <th>Q-Wait</th>
+                                                <th>Sys-Wait (W)</th>
+                                                <th>Server</th>
+                                                <th id="priorityTh" style="display:none">Priority</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <p class="small text-muted mt-2">
+                                    <span class="warmup-legend me-2">■</span> Shaded rows = warm-up customers (excluded
+                                    from stats)
+                                </p>
+                            </div>
+                            <!-- Gantt Tab -->
+                            <div class="tab-pane fade p-4" id="gantt-pane">
+                                <div class="chart-container" style="height:500px;">
+                                    <canvas id="ganttChart"></canvas>
+                                </div>
+                                <p class="small text-muted mt-2 text-center">
+                                    Gantt chart: coloured bars = service intervals, gaps = idle time. Each bar labelled
+                                    with Customer ID.
+                                </p>
+                            </div>
+                            <!-- System Wait Tab -->
+                            <div class="tab-pane fade p-4" id="waiting-pane">
+                                <div class="chart-container" style="height:450px;">
+                                    <canvas id="waitingChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div class="row g-4 mt-4">
+            <!-- Part 3: Multi-Server -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-layer-group text-primary me-2"></i>Multi-Server Comparison — Part 3
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-center small mb-0" id="multiServerComparisonTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Servers</th>
+                                        <th>W</th>
+                                        <th>Q</th>
+                                        <th>Util%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1 Server</td>
+                                        <td id="msc-w1">—</td>
+                                        <td id="msc-q1">—</td>
+                                        <td id="msc-u1">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2 Servers</td>
+                                        <td id="msc-w2">—</td>
+                                        <td id="msc-q2">—</td>
+                                        <td id="msc-u2">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3 Servers</td>
+                                        <td id="msc-w3">—</td>
+                                        <td id="msc-q3">—</td>
+                                        <td id="msc-u3">—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="small text-muted mt-2 mb-0">More servers → lower W &amp; Q, but each server less
+                            utilized.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Discipline Comparison -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-exchange-alt text-primary me-2"></i>Discipline Comparison — Part 4
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-center small mb-0" id="disciplineComparisonTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Discipline</th>
+                                        <th>Avg W</th>
+                                        <th>Avg Q</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>FCFS</td>
+                                        <td id="dc-fcfs-w">—</td>
+                                        <td id="dc-fcfs-q">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>LCFS</td>
+                                        <td id="dc-lcfs-w">—</td>
+                                        <td id="dc-lcfs-q">—</td>
+                                    </tr>
+                                    <tr class="table-light fw-bold">
+                                        <td>Difference</td>
+                                        <td id="dc-diff-w">—</td>
+                                        <td id="dc-diff-q">—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="small text-muted mt-2 mb-0">LCFS: same avg W, higher variance. Early arrivals may wait
+                            much longer (unfair).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5: Warm-up -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-stopwatch text-primary me-2"></i>Warm-up Analysis — Part 5
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-center small mb-0" id="warmupComparisonTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>k = 0</th>
+                                        <th>k = 3</th>
+                                        <th>Δ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Avg Wait (W)</td>
+                                        <td id="wuc-w0">—</td>
+                                        <td id="wuc-w3">—</td>
+                                        <td id="wuc-wd">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Queue (Q)</td>
+                                        <td id="wuc-q0">—</td>
+                                        <td id="wuc-q3">—</td>
+                                        <td id="wuc-qd">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Utilization</td>
+                                        <td id="wuc-u0">—</td>
+                                        <td id="wuc-u3">—</td>
+                                        <td id="wuc-ud">—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="small text-muted mt-2 mb-0">Warm-up excludes first k customers from stats for
+                            steady-state accuracy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Observations -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-comment-alt text-primary me-2"></i>Observations &amp; Analysis
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded-3">
+                                    <p class="small fw-bold mb-1 text-primary">Queue Discipline (Part 4)</p>
+                                    <p class="small mb-0">LCFS often produces the same average system wait (W) as FCFS
+                                        mathematically, since service time is independent of order. However, individual
+                                        fairness is compromised: early arrivals may be repeatedly overtaken by later
+                                        arrivals, leading to starvation. Variance in wait times is significantly higher
+                                        under LCFS.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded-3">
+                                    <p class="small fw-bold mb-1 text-primary">Warm-up Effect (Part 5)</p>
+                                    <p class="small mb-0">Without warm-up, the simulation starts with all servers idle
+                                        and the first customers experience zero queue time, pulling W and Q artificially
+                                        low. Excluding the first k customers allows the system to reach steady state
+                                        before collecting statistics, producing more realistic estimates — especially
+                                        noticeable with small n.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded-3">
+                                    <p class="small fw-bold mb-1 text-primary">Multi-Server Trade-off (Part 3)</p>
+                                    <p class="small mb-0">Adding servers dramatically reduces W and Q but each
+                                        additional server has diminishing returns — the third server is often idle. This
+                                        is the classic cost-performance trade-off: more servers increase capacity but
+                                        reduce per-server efficiency. The optimal s depends on the arrival rate, service
+                                        rate, and required service level.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LCG Sequences -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-microchip text-primary me-2"></i>Generated Random Sequences (LCG — Part 1)
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Inter-Arrival Times:</label>
+                                <div id="interArrivalSeq"
+                                    class="p-3 bg-light rounded-3 font-monospace small text-break">—</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small text-muted fw-bold mb-1">Service Times:</label>
+                                <div id="serviceSeq" class="p-3 bg-light rounded-3 font-monospace small text-break">—
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <script src="./js/script.js"></script>
+</body>
+
+</html>
