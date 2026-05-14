@@ -88,7 +88,7 @@ const tableWarmupUtilDiff = document.getElementById('wuc-ud');
 // Wire up events
 simulationForm.addEventListener('submit', onFormSubmit);
 resetButton.addEventListener('click', () => location.reload());
-document.addEventListener('DOMContentLoaded', () => onFormSubmit());
+// Auto-run removed to allow manual entry on first load
 
 
 // =============================================================

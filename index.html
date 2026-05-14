@@ -38,36 +38,38 @@
                         <form id="simForm">
                             <div class="mb-3">
                                 <label for="customerCount" class="form-label">Number of Customers (n)</label>
-                                <input type="number" class="form-control" id="customerCount" value="15" min="1"
-                                    max="1000">
+                                <input type="number" class="form-control" id="customerCount" placeholder="e.g. 15" min="1"
+                                    max="1000" required>
                             </div>
                             <div class="mb-3">
                                 <label for="seed" class="form-label">Random Seed</label>
-                                <input type="number" class="form-control" id="seed" value="42">
+                                <input type="number" class="form-control" id="seed" placeholder="e.g. 42" required>
                             </div>
                             <div class="mb-3">
                                 <label for="serverCount" class="form-label">Servers</label>
-                                <select class="form-select" id="serverCount">
-                                    <option value="1" selected>1 Server</option>
+                                <select class="form-select" id="serverCount" required>
+                                    <option value="" disabled selected>Select servers...</option>
+                                    <option value="1">1 Server</option>
                                     <option value="2">2 Servers</option>
                                     <option value="3">3 Servers</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="discipline" class="form-label">Queue Discipline</label>
-                                <select class="form-select" id="discipline">
-                                    <option value="FCFS" selected>FCFS (First-Come-First-Served)</option>
+                                <select class="form-select" id="discipline" required>
+                                    <option value="" disabled selected>Select discipline...</option>
+                                    <option value="FCFS">FCFS (First-Come-First-Served)</option>
                                     <option value="LCFS">LCFS (Last-Come-First-Served)</option>
                                     <option value="Priority">Priority Queue</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="maxQueue" class="form-label">Max Queue Length (0 = ∞)</label>
-                                <input type="number" class="form-control" id="maxQueue" value="0" min="0">
+                                <input type="number" class="form-control" id="maxQueue" placeholder="0" min="0" required>
                             </div>
                             <div class="mb-4">
                                 <label for="warmup" class="form-label">Warm-up Count (k)</label>
-                                <input type="number" class="form-control" id="warmup" value="0" min="0">
+                                <input type="number" class="form-control" id="warmup" placeholder="0" min="0" required>
                             </div>
 
                             <div class="d-grid gap-2">
