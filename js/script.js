@@ -1,8 +1,3 @@
-// =============================================================
-//  Discrete Event Simulation — script.js
-//  Parts 1 through 6 implemented from scratch (no frameworks)
-// =============================================================
-
 // ---------- Chart.js global defaults ----------
 Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.color = '#64748b';
@@ -16,11 +11,6 @@ const SERVER_COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#
 const LCG_MULTIPLIER = 1664525;
 const LCG_INCREMENT = 1013904223;
 const LCG_MODULUS = 4294967296; // 2^32
-
-// =============================================================
-//  1. DOM Elements & Event Listeners
-// =============================================================
-
 // Form Inputs
 const inputCustomerCount = document.getElementById('customerCount');
 const inputSeed = document.getElementById('seed');
@@ -34,9 +24,9 @@ const simulationForm = document.getElementById('simForm');
 const resetButton = document.getElementById('resetBtn');
 
 // KPI Cards
-const kpiAvgWait = document.getElementById('statW');
-const kpiAvgQueue = document.getElementById('statQ');
-const kpiUtilization = document.getElementById('statU');
+const kpiAvgWait = document.getElementById('kpi-avg-wait');
+const kpiAvgQueue = document.getElementById('kpi-avg-queue');
+const kpiUtilization = document.getElementById('kpi-utilization');
 const kpiTotalTime = document.getElementById('statTotalTime');
 const kpiRejected = document.getElementById('statRejected');
 
@@ -52,17 +42,17 @@ const canvasGanttChart = document.getElementById('ganttChart');
 const canvasWaitChart = document.getElementById('waitingChart');
 
 // Comparison Tables (Part 3: Multi-Server)
-const tableMscWait1 = document.getElementById('msc-w1');
-const tableMscWait2 = document.getElementById('msc-w2');
-const tableMscWait3 = document.getElementById('msc-w3');
+const tableCompWait1 = document.getElementById('comp-wait-1');
+const tableCompWait2 = document.getElementById('comp-wait-2');
+const tableCompWait3 = document.getElementById('comp-wait-3');
 
-const tableMscQueue1 = document.getElementById('msc-q1');
-const tableMscQueue2 = document.getElementById('msc-q2');
-const tableMscQueue3 = document.getElementById('msc-q3');
+const tableCompQueue1 = document.getElementById('comp-queue-1');
+const tableCompQueue2 = document.getElementById('comp-queue-2');
+const tableCompQueue3 = document.getElementById('comp-queue-3');
 
-const tableMscUtil1 = document.getElementById('msc-u1');
-const tableMscUtil2 = document.getElementById('msc-u2');
-const tableMscUtil3 = document.getElementById('msc-u3');
+const tableCompUtil1 = document.getElementById('comp-util-1');
+const tableCompUtil2 = document.getElementById('comp-util-2');
+const tableCompUtil3 = document.getElementById('comp-util-3');
 
 // Comparison Tables (Part 4: Discipline)
 const tableDisciplineFcfsWait = document.getElementById('dc-fcfs-w');
@@ -88,13 +78,6 @@ const tableWarmupUtilDiff = document.getElementById('wuc-ud');
 // Wire up events
 simulationForm.addEventListener('submit', onFormSubmit);
 resetButton.addEventListener('click', () => location.reload());
-// Auto-run removed to allow manual entry on first load
-
-
-// =============================================================
-//  2. Simulation Functions
-// =============================================================
-
 /**
  * Calculates the next state for the Linear Congruential Generator (LCG).
  * Takes the current state (seed) and applies the mathematical formula to produce the new state.
@@ -319,8 +302,7 @@ function updateDashboard(result) {
 
     // Update utilization percentage for each server
     containerPerServerUtil.innerHTML = stats.perServerUtil
-        .map((util, i) => `<span class="badge bg-secondary me-1">S${i + 1}: ${util}%</span>`)
-        .join('');
+        .map((util, i) => `<span class="badge bg-secondary me-1">S${i + 1}: ${util}%</span>`).join('');
 
     // Update event log table (clear then refill)
     eventLogTableBody.innerHTML = '';
@@ -344,9 +326,7 @@ function updateDashboard(result) {
 
         const priorityBadge = showPriorityColumn
             ? `<td><span class="badge ${customer.priority === 1 ? 'bg-danger' :
-                customer.priority === 2 ? 'bg-warning text-dark' : 'bg-secondary'
-            }">P${customer.priority}</span></td>`
-            : '';
+                customer.priority === 2 ? 'bg-warning text-dark' : 'bg-secondary'}">P${customer.priority}</span></td>` : '';
 
         const hasQueueWait = !customer.wasRejected && customer.waitTimeInQueue > 0;
 
@@ -365,8 +345,6 @@ function updateDashboard(result) {
         eventLogTableBody.appendChild(row);
     });
 }
-
-
 /**
  * Directs calls to draw the graphical charts (Gantt and Wait Chart).
  */
@@ -392,21 +370,15 @@ function drawGanttChart(result, servedCustomers) {
         barPercentage: 0.6,
         categoryPercentage: 0.8,
         data: servedCustomers
-            .filter(c => c.servedByServer === serverIndex + 1)
-            .map(c => ({
+            .filter(c => c.servedByServer === serverIndex + 1).map(c => ({
                 x: [c.serviceStartTime, c.serviceEndTime],
-                y: serverLabel,
-                label: `C${c.id}`
+                y: serverLabel, label: `C${c.id}`
             }))
     }));
 
     ganttChart = new Chart(ctx, {
-        type: 'bar',
-        data: { labels: serverLabels, datasets },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
+        type: 'bar', data: { labels: serverLabels, datasets }, options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
             plugins: {
                 legend: { position: 'top', align: 'end' },
                 datalabels: {
@@ -485,15 +457,15 @@ function drawWaitBarChart(servedCustomers) {
  */
 function fillComparisonTables(baseConfig) {
     // ---- Part 3: Multi-server comparison ----
-    const mscW = [null, tableMscWait1, tableMscWait2, tableMscWait3];
-    const mscQ = [null, tableMscQueue1, tableMscQueue2, tableMscQueue3];
-    const mscU = [null, tableMscUtil1, tableMscUtil2, tableMscUtil3];
-    
+    const compWaitCells = [null, tableCompWait1, tableCompWait2, tableCompWait3];
+    const compQueueCells = [null, tableCompQueue1, tableCompQueue2, tableCompQueue3];
+    const compUtilCells = [null, tableCompUtil1, tableCompUtil2, tableCompUtil3];
+
     [1, 2, 3].forEach(numServers => {
         const result = runSimulation({ ...baseConfig, numServers, warmupCount: 0, discipline: 'FCFS' });
-        mscW[numServers].innerText = result.stats.avgSystemWait;
-        mscQ[numServers].innerText = result.stats.avgQueueLength;
-        mscU[numServers].innerText = result.stats.utilization + '%';
+        compWaitCells[numServers].innerText = result.stats.avgSystemWait;
+        compQueueCells[numServers].innerText = result.stats.avgQueueLength;
+        compUtilCells[numServers].innerText = result.stats.utilization + '%';
     });
 
     // ---- Part 4: Discipline comparison ----

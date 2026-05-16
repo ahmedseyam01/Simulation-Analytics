@@ -7,14 +7,10 @@
     <title>DES Simulation Dashboard — Discrete Event Simulation</title>
     <meta name="description"
         content="Professional Discrete Event Simulation platform implementing LCG random generation, FCFS/LCFS/Priority queuing, multi-server support, and warm-up period analysis.">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
@@ -26,7 +22,6 @@
         </header>
 
         <div class="row g-4">
-            <!-- Sidebar: Parameters -->
             <div class="col-lg-4 col-xl-3">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body p-4">
@@ -82,7 +77,6 @@
                             </div>
                         </form>
 
-                        <!-- LCG Info Box -->
                         <div class="mt-4 p-3 bg-light rounded-3">
                             <p class="small text-muted mb-1 fw-bold"><i class="fas fa-microchip me-1"></i> LCG
                                 Parameters</p>
@@ -95,15 +89,13 @@
                 </div>
             </div>
 
-            <!-- Main Display -->
             <div class="col-lg-8 col-xl-9">
-                <!-- KPI Row -->
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-4 col-lg">
                         <div class="card stat-card h-100 bg-primary text-white shadow-sm border-0">
                             <div class="card-body">
                                 <h6 class="text-uppercase opacity-75 small mb-2">Avg System Wait (W)</h6>
-                                <h3 id="statW">—</h3>
+                                <h3 id="kpi-avg-wait">—</h3>
                                 <p class="small opacity-75 mb-0">minutes</p>
                             </div>
                         </div>
@@ -112,7 +104,7 @@
                         <div class="card stat-card h-100 bg-success text-white shadow-sm border-0">
                             <div class="card-body">
                                 <h6 class="text-uppercase opacity-75 small mb-2">Avg Queue (Q)</h6>
-                                <h3 id="statQ">—</h3>
+                                <h3 id="kpi-avg-queue">—</h3>
                                 <p class="small opacity-75 mb-0">customers</p>
                             </div>
                         </div>
@@ -121,7 +113,7 @@
                         <div class="card stat-card h-100 bg-warning text-dark shadow-sm border-0">
                             <div class="card-body">
                                 <h6 class="text-uppercase opacity-75 small mb-2">Utilization (U)</h6>
-                                <h3 id="statU">—</h3>
+                                <h3 id="kpi-utilization">—</h3>
                                 <p class="small opacity-75 mb-0">busy time</p>
                             </div>
                         </div>
@@ -146,14 +138,12 @@
                     </div>
                 </div>
 
-                <!-- Per-server utilization -->
                 <div class="mb-3">
                     <span class="small text-muted fw-bold me-2"><i class="fas fa-server me-1"></i>Per-Server
                         Utilization:</span>
                     <span id="perServerUtil"></span>
                 </div>
 
-                <!-- Main Analysis Area -->
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-white border-0 p-0">
                         <ul class="nav nav-tabs border-0" id="resultTabs" role="tablist">
@@ -179,7 +169,6 @@
                     </div>
                     <div class="card-body p-0">
                         <div class="tab-content" id="myTabContent">
-                            <!-- Event Log Tab -->
                             <div class="tab-pane fade show active p-4" id="table-pane">
                                 <div class="table-responsive">
                                     <table class="table table-hover align-middle" id="simTable">
@@ -205,17 +194,13 @@
                                     from stats)
                                 </p>
                             </div>
-                            <!-- Gantt Tab -->
                             <div class="tab-pane fade p-4" id="gantt-pane">
                                 <div class="chart-container" style="height:500px;">
                                     <canvas id="ganttChart"></canvas>
                                 </div>
-                                <p class="small text-muted mt-2 text-center">
-                                    Gantt chart: coloured bars = service intervals, gaps = idle time. Each bar labelled
-                                    with Customer ID.
-                                </p>
+                                <p class="small text-muted mt-2 text-center">Gantt chart: coloured bars = service intervals, gaps = idle time. Each bar labelled
+                                    with Customer ID.</p>
                             </div>
-                            <!-- System Wait Tab -->
                             <div class="tab-pane fade p-4" id="waiting-pane">
                                 <div class="chart-container" style="height:450px;">
                                     <canvas id="waitingChart"></canvas>
@@ -227,14 +212,14 @@
             </div>
         </div>
 
-        <!-- Comparison Section -->
+
         <div class="row g-4 mt-4">
-            <!-- Part 3: Multi-Server -->
+
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
                         <h6 class="fw-bold mb-3">
-                            <i class="fas fa-layer-group text-primary me-2"></i>Multi-Server Comparison — Part 3
+                            <i class="fas fa-layer-group text-primary me-2"></i>Multi-Server Comparison  
                         </h6>
                         <div class="table-responsive">
                             <table class="table table-bordered text-center small mb-0" id="multiServerComparisonTable">
@@ -249,21 +234,21 @@
                                 <tbody>
                                     <tr>
                                         <td>1 Server</td>
-                                        <td id="msc-w1">—</td>
-                                        <td id="msc-q1">—</td>
-                                        <td id="msc-u1">—</td>
+                                        <td id="comp-wait-1">—</td>
+                                        <td id="comp-queue-1">—</td>
+                                        <td id="comp-util-1">—</td>
                                     </tr>
                                     <tr>
                                         <td>2 Servers</td>
-                                        <td id="msc-w2">—</td>
-                                        <td id="msc-q2">—</td>
-                                        <td id="msc-u2">—</td>
+                                        <td id="comp-wait-2">—</td>
+                                        <td id="comp-queue-2">—</td>
+                                        <td id="comp-util-2">—</td>
                                     </tr>
                                     <tr>
                                         <td>3 Servers</td>
-                                        <td id="msc-w3">—</td>
-                                        <td id="msc-q3">—</td>
-                                        <td id="msc-u3">—</td>
+                                        <td id="comp-wait-3">—</td>
+                                        <td id="comp-queue-3">—</td>
+                                        <td id="comp-util-3">—</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -274,12 +259,11 @@
                 </div>
             </div>
 
-            <!-- Part 4: Discipline Comparison -->
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
                         <h6 class="fw-bold mb-3">
-                            <i class="fas fa-exchange-alt text-primary me-2"></i>Discipline Comparison — Part 4
+                            <i class="fas fa-exchange-alt text-primary me-2"></i>Discipline Comparison  
                         </h6>
                         <div class="table-responsive">
                             <table class="table table-bordered text-center small mb-0" id="disciplineComparisonTable">
@@ -315,12 +299,11 @@
                 </div>
             </div>
 
-            <!-- Part 5: Warm-up -->
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
                         <h6 class="fw-bold mb-3">
-                            <i class="fas fa-stopwatch text-primary me-2"></i>Warm-up Analysis — Part 5
+                            <i class="fas fa-stopwatch text-primary me-2"></i>Warm-up Analysis  
                         </h6>
                         <div class="table-responsive">
                             <table class="table table-bordered text-center small mb-0" id="warmupComparisonTable">
@@ -361,58 +344,12 @@
             </div>
         </div>
 
-        <!-- Observations -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
                         <h6 class="fw-bold mb-3">
-                            <i class="fas fa-comment-alt text-primary me-2"></i>Observations &amp; Analysis
-                        </h6>
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded-3">
-                                    <p class="small fw-bold mb-1 text-primary">Queue Discipline (Part 4)</p>
-                                    <p class="small mb-0">LCFS often produces the same average system wait (W) as FCFS
-                                        mathematically, since service time is independent of order. However, individual
-                                        fairness is compromised: early arrivals may be repeatedly overtaken by later
-                                        arrivals, leading to starvation. Variance in wait times is significantly higher
-                                        under LCFS.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded-3">
-                                    <p class="small fw-bold mb-1 text-primary">Warm-up Effect (Part 5)</p>
-                                    <p class="small mb-0">Without warm-up, the simulation starts with all servers idle
-                                        and the first customers experience zero queue time, pulling W and Q artificially
-                                        low. Excluding the first k customers allows the system to reach steady state
-                                        before collecting statistics, producing more realistic estimates — especially
-                                        noticeable with small n.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded-3">
-                                    <p class="small fw-bold mb-1 text-primary">Multi-Server Trade-off (Part 3)</p>
-                                    <p class="small mb-0">Adding servers dramatically reduces W and Q but each
-                                        additional server has diminishing returns — the third server is often idle. This
-                                        is the classic cost-performance trade-off: more servers increase capacity but
-                                        reduce per-server efficiency. The optimal s depends on the arrival rate, service
-                                        rate, and required service level.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- LCG Sequences -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <h6 class="fw-bold mb-3">
-                            <i class="fas fa-microchip text-primary me-2"></i>Generated Random Sequences (LCG — Part 1)
+                            <i class="fas fa-microchip text-primary me-2"></i>Generated Random Sequences (LCG)
                         </h6>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -432,7 +369,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>

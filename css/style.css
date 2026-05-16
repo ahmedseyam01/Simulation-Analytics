@@ -23,13 +23,11 @@ body {
     font-weight: 800;
 }
 
-/* Layout */
 .container-fluid {
     max-width: 1440px;
     margin: 0 auto;
 }
 
-/* Card Styling */
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -48,7 +46,6 @@ body {
     color: var(--text-dark);
 }
 
-/* Form Controls */
 .form-label {
     font-weight: 600;
     font-size: 0.85rem;
@@ -71,7 +68,6 @@ body {
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
 }
 
-/* Buttons */
 .btn-primary {
     background-color: var(--primary-color);
     border: none;
@@ -92,7 +88,7 @@ body {
     color: var(--text-muted);
 }
 
-/* Stats */
+
 .stat-card {
     border: none;
     border-radius: 20px;
@@ -112,7 +108,7 @@ body {
 .stat-card h6 {
     font-weight: 600;
     letter-spacing: 0.05em;
-    min-height: 2rem; /* Forces consistent height for titles (1 or 2 lines) */
+    min-height: 2rem; 
     display: flex;
     align-items: center;
 }
@@ -121,7 +117,7 @@ body {
     font-size: 0.8rem;
 }
 
-/* Tabs */
+
 .nav-tabs {
     border-bottom: 1px solid var(--border-color);
     padding: 0 1.5rem;
@@ -150,14 +146,14 @@ body {
     background-color: var(--primary-color);
 }
 
-/* Charts */
+
 .chart-container {
     background: #fff;
     padding: 1rem;
     border-radius: 16px;
 }
 
-/* Table */
+
 .table-responsive {
     border-radius: 16px;
     border: 1px solid var(--border-color);
@@ -179,7 +175,7 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
-/* Badges */
+
 .badge {
     padding: 0.6em 0.9em;
     font-weight: 700;
@@ -190,7 +186,6 @@ body {
     background-color: #334155 !important;
 }
 
-/* Warm-up row styling */
 .warmup-row td {
     opacity: 0.5;
     font-style: italic;
@@ -202,7 +197,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* Animations */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -219,7 +214,6 @@ body {
     animation: fadeIn 0.4s ease-out;
 }
 
-/* Per-server utilization badges */
 #perServerUtil .badge {
     font-size: 0.8rem;
 }
